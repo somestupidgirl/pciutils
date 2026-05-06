@@ -86,6 +86,7 @@ find_ready_links(struct pci_access *pacc, struct margin_link *links, bool cnt_on
           margin_find_pair(pacc, p, &down, &up);
 
           if (down && margin_verify_link(down, up)
+              && pci_find_cap(up, PCI_EXT_CAP_ID_LMR, PCI_CAP_EXTENDED)
               && (margin_check_ready_bit(down) || margin_check_ready_bit(up)))
             {
               if (!cnt_only)
@@ -284,7 +285,7 @@ margin_parse_util_args(struct pci_access *pacc, int argc, char **argv, enum marg
             {
               margin_gen_bdfs(down, up, err, sizeof(err));
               die("Link %s is not ready for margining.\n"
-                  "Link data rate must be 16 GT/s or 32 GT/s.\n"
+                  "Link data rate must be 16 GT/s, 32 GT/s, or 64 GT/s.\n"
                   "Downstream Component must be at D0 PM state.\n",
                   err);
             }

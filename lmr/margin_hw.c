@@ -87,7 +87,7 @@ margin_verify_link(struct pci_dev *down_port, struct pci_dev *up_port)
     return false;
   if ((pci_read_word(down_port, cap->addr + PCI_EXP_LNKSTA) & PCI_EXP_LNKSTA_SPEED) < 4)
     return false;
-  if ((pci_read_word(down_port, cap->addr + PCI_EXP_LNKSTA) & PCI_EXP_LNKSTA_SPEED) > 5)
+  if ((pci_read_word(down_port, cap->addr + PCI_EXP_LNKSTA) & PCI_EXP_LNKSTA_SPEED) > 6)
     return false;
 
   u8 down_sec = pci_read_byte(down_port, PCI_SECONDARY_BUS);
@@ -132,6 +132,10 @@ margin_fill_link(struct pci_dev *down_port, struct pci_dev *up_port, struct marg
 {
   memset(wrappers, 0, sizeof(*wrappers));
   if (!margin_verify_link(down_port, up_port))
+    return false;
+  if (!pci_find_cap(down_port, PCI_EXT_CAP_ID_LMR, PCI_CAP_EXTENDED))
+    return false;
+  if (!pci_find_cap(up_port, PCI_EXT_CAP_ID_LMR, PCI_CAP_EXTENDED))
     return false;
   wrappers->down_port = fill_dev_wrapper(down_port);
   wrappers->up_port = fill_dev_wrapper(up_port);

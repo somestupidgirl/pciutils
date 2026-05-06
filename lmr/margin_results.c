@@ -64,7 +64,7 @@ margin_results_print_brief(struct margin_results *results, u8 recvs_n,
   char *no_test_msgs[] = { "",
                            "Margining Ready bit is Clear",
                            "Error during caps reading",
-                           "Margining prerequisites are not satisfied (16/32 GT/s, D0)",
+                           "Margining prerequisites are not satisfied (supported rate, D0)",
                            "Invalid lanes specified with arguments",
                            "Invalid receivers specified with arguments",
                            "Couldn't disable ASPM" };

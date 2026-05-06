@@ -18,7 +18,7 @@
 enum margin_hw { MARGIN_HW_DEFAULT, MARGIN_ICE_LAKE_RC };
 
 // in ps
-static const double margin_ui[] = { 62.5, 31.25 };
+static const double margin_ui[] = { 62.5, 31.25, 31.25 };
 
 /* PCI Device wrapper for margining functions */
 struct margin_dev {
@@ -194,7 +194,7 @@ bool margin_port_is_down(struct pci_dev *dev);
 bool margin_find_pair(struct pci_access *pacc, struct pci_dev *dev, struct pci_dev **down_port,
                       struct pci_dev **up_port);
 
-/* Verify that devices form the link with 16 GT/s or 32 GT/s data rate */
+/* Verify that devices form the link with valid data rate */
 bool margin_verify_link(struct pci_dev *down_port, struct pci_dev *up_port);
 
 /* Check Margining Ready bit from Margining Port Status Register */
@@ -258,11 +258,11 @@ void margin_log_hw_quirks(struct margin_recv *recv);
 // (Transmitter Electrical Compliance)
 
 // values in ps
-static const double margin_ew_min[] = { 18.75, 9.375 };
-static const double margin_ew_rec[] = { 23.75, 10.1565 };
+static const double margin_ew_min[] = { 18.75, 9.375, 9.375 };
+static const double margin_ew_rec[] = { 23.75, 10.1565, 10.1565 };
 
-static const double margin_eh_min[] = { 15, 15 };
-static const double margin_eh_rec[] = { 21, 19.75 };
+static const double margin_eh_min[] = { 15, 15, 5 };
+static const double margin_eh_rec[] = { 21, 19.75, 7 };
 
 void margin_results_print_brief(struct margin_results *results, u8 recvs_n,
                                 struct margin_link_args *args);
