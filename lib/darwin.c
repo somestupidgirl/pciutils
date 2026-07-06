@@ -80,8 +80,11 @@ darwin_detect(struct pci_access *a)
   io_registry_entry_t    service;
   io_connect_t           connect;
   kern_return_t          status;
-
+#if defined(__x86_64__)
   service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleACPIPlatformExpert"));
+#elif defined(__arm64__) || defined(__aarch64__)
+  service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleARMPE"));
+#endif
   if (service)
     {
       status = IOServiceOpen(service, mach_task_self(), 0, &connect);
@@ -90,10 +93,18 @@ darwin_detect(struct pci_access *a)
 
   if (!service || (kIOReturnSuccess != status))
     {
+#if defined(__x86_64__)
       a->warning("Cannot open AppleACPIPlatformExpert (add boot arg debug=0x144 & run as root)");
+#elif defined(__arm64__) || defined(__aarch64__)
+      a->warning("Cannot open AppleARMPE (add boot arg debug=0x144 & run as root)");
+#endif
       return 0;
     }
+#if defined(__x86_64__)
   a->debug("...using AppleACPIPlatformExpert");
+#elif defined(__arm64__) || defined(__aarch64__)
+  a->debug("...using AppleARMPE");
+#endif
   a->fd = connect;
   return 1;
 }
