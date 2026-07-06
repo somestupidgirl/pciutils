@@ -133,9 +133,19 @@ case $sys in
 		;;
 
         darwin*)
-	        echo_n " darwin"
+	        echo_n " darwin ecam"
 		echo >>$c '#define PCI_HAVE_PM_DARWIN_DEVICE'
+		# ECAM access to memory-mapped PCIe config space via the DirectHW
+		# kext (there is no /dev/mem on macOS). Requires DirectHW installed
+		# (header in /usr/local/include, libDirectHW in /usr/local/lib).
+		echo >>$c '#define PCI_HAVE_PM_ECAM'
+		echo >>$c '#define PCI_USE_PHYSMEM_DARWIN'
+		echo >>$c '#define PCI_PATH_DEVMEM_DEVICE ""'
+		echo >>$c '#define PCI_PATH_ACPI_MCFG ""'
+		echo >>$c '#define PCI_PATH_EFI_SYSTAB ""'
 		echo >>$m 'WITH_LIBS+=-lresolv -framework CoreFoundation -framework IOKit'
+		echo >>$m 'WITH_LIBS+=-L'${DIRECTHW_LIBDIR:-/usr/local/lib}' -lDirectHW'
+		echo >>$m 'CFLAGS+=-I'${DIRECTHW_INCDIR:-/usr/local/include}
 		echo >>$c '#define PCI_HAVE_64BIT_ADDRESS'
 		LIBRESOLV=
 		LIBEXT=dylib
